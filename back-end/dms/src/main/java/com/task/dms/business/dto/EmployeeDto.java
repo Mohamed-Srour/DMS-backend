@@ -3,6 +3,7 @@ package com.task.dms.business.dto;
 import java.sql.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.task.dms.presistence.models.Department;
 
@@ -16,7 +17,8 @@ import lombok.NoArgsConstructor;
 @JsonSerialize
 public class EmployeeDto {
     
-     private int code;
+     private Integer code;
+     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
      private Department department;
      private String name;
     @JsonFormat(shape = JsonFormat.Shape.STRING ,pattern="yyyy-MM-dd" ,  locale ="##defualt"  )

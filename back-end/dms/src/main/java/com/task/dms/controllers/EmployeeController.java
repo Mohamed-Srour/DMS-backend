@@ -30,4 +30,9 @@ public class EmployeeController {
     {
         return new ResponseDTO("all employees", true, 200, employeeService.getAll());
     }
+    @PostMapping("/search")
+    public ResponseDTO search(@RequestBody EmployeeDto employeeDto)
+    {
+        return new ResponseDTO("employees searched for", true, 200, employeeService.searchEmployee(employeeDto));
+    }
 }

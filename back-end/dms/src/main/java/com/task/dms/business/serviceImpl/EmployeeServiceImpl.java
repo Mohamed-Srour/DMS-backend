@@ -20,6 +20,7 @@ import com.task.dms.exceptions.DuplicatedExceptions;
 import com.task.dms.exceptions.ResourceNotFoundException;
 import com.task.dms.presistence.models.Employee;
 import com.task.dms.presistence.repositories.EmployeeRepo;
+import com.task.dms.presistence.repositories.SearchReop;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -32,7 +33,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private DepartmentService departmentService;
     @Autowired
     private DepartmentMapper departmentMapper;
-
+    @Autowired
+    private SearchReop searchReop;
     @Override
     public void add(EmployeeDto employeeDto) {
         Employee employee = getEmployeeById(employeeDto);
@@ -61,16 +63,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<EmployeeDto> getAll() {
         List<Employee> employee = employeeRepo.findAll();
         for (Employee i : employee) {
-            System.out.println(i);
+            System.out.println(i.getBirth_date());
         }
 
-        return employeeMapper.map(employee);
+        return employeeMapper.map(employeeRepo.findAll());
     }
 
     @Override
     public List<EmployeeDto> searchEmployee(EmployeeDto employeeDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'searchEmployee'");
+        List<EmployeeDto> employeeDtos=employeeMapper.map(searchReop.employeefilter(employeeDto));
+        return employeeDtos;
     }
 
     @Override
