@@ -68,7 +68,7 @@ public class Department implements java.io.Serializable {
         this.description = description;
     }
 
-    @JsonManagedReference
+    // @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
     public Set<Employee> getEmployees() {
         return this.employees;

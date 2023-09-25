@@ -12,4 +12,6 @@ public interface EmployeeMapper {
     public Employee map(EmployeeDto employeeDto);
     public EmployeeDto map(Employee employee);
     public List<EmployeeDto> map(List<Employee> employees);
+
+    
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.task.dms.business.dto.EmployeeDto;
+import com.task.dms.presistence.models.Department;
 import com.task.dms.presistence.models.Employee;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
@@ -29,24 +32,24 @@ public class SearchReop {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Employee> criteriaQuery = criteriaBuilder.createQuery(Employee.class);
         List<Predicate> predicates = new ArrayList<>();
-
+        
         Root<Employee> root = criteriaQuery.from(Employee.class);
-
+        Join<Employee, Department> departmentJoin = root.join("department", JoinType.INNER);
         if (employeeDTO.getName() != null) {
             Predicate name = criteriaBuilder.like(root.get("name"), "%" + employeeDTO.getName() + "%");
             predicates.add(name);
         }
 
-        if (employeeDTO.getDepartment().getCode() != null) {
-            Predicate department_code = criteriaBuilder.equal(root.get("department_code"), employeeDTO.getDepartment().getCode() );
+        if (employeeDTO.getDepartment() != null &&employeeDTO.getDepartment().getCode() != null) {
+            Predicate department_code = criteriaBuilder.equal(departmentJoin.get("code"), employeeDTO.getDepartment().getCode() );
             predicates.add(department_code);
         }
-        if (employeeDTO.getDepartment().getName() != null) {
-            Predicate department_name = criteriaBuilder.like(root.get("department_name"), "%" + employeeDTO.getDepartment().getName() + "%");
+        if (employeeDTO.getDepartment() != null &&employeeDTO.getDepartment().getName() != null) {
+            Predicate department_name = criteriaBuilder.like(departmentJoin.get("name"), "%" + employeeDTO.getDepartment().getName() + "%");
             predicates.add(department_name);
         }
-        if (employeeDTO.getDepartment().getDescription() != null) {
-            Predicate department_description = criteriaBuilder.like(root.get("department_description"), "%" + employeeDTO.getDepartment().getDescription() + "%");
+        if (employeeDTO.getDepartment() != null &&employeeDTO.getDepartment().getDescription() != null) {
+            Predicate department_description = criteriaBuilder.like(departmentJoin.get("description"), "%" + employeeDTO.getDepartment().getDescription() + "%");
             predicates.add(department_description);
         }
         if (employeeDTO.getCode() != null) {
@@ -79,6 +82,9 @@ public class SearchReop {
         criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
         TypedQuery<Employee> query = entityManager.createQuery(criteriaQuery);
         return query.getResultList();
+
+
+        
     }
 
 

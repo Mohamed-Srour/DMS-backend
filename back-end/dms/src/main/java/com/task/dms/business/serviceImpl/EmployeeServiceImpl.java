@@ -32,8 +32,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private DepartmentService departmentService;
     @Autowired
-    private DepartmentMapper departmentMapper;
-    @Autowired
     private SearchReop searchReop;
     @Override
     public void add(EmployeeDto employeeDto) {
@@ -42,11 +40,11 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new DuplicatedExceptions(employeeDto.getCode());
         }
         DepartmentDto departmentDto = departmentService
-                .getDepartmentById(departmentMapper.map(employeeDto.getDepartment()));
+                .getDepartmentById(employeeDto.getDepartment());
         if (departmentDto == null) {
             throw new ResourceNotFoundException(employeeDto.getDepartment().getCode());
         }
-        java.sql.Date birthDate = employeeDto.getBirth_date();
+        java.util.Date birthDate = employeeDto.getBirth_date();
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(birthDate);
@@ -54,7 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        java.sql.Date dateOnly = new java.sql.Date(calendar.getTimeInMillis());
+        java.util.Date dateOnly = new java.sql.Date(calendar.getTimeInMillis());
         employeeDto.setBirth_date(dateOnly);
         employeeRepo.save(employeeMapper.map(employeeDto));
     }
